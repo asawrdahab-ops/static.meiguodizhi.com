@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://docs.biztex.co.jp/index_map_havpt.xml
+Sitemap: https://ww2.dontkillmyapp.com/index_map_fvmf.xml
