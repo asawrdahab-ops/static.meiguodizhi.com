@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.biztex.co.jp/index_map_havpt.xml
