@@ -16,7 +16,7 @@ class UltraAggressiveSEO:
         # اسم ملف السايت ماب random شوية
         self.sitemap_index_file = f"index_map_{''.join(random.choices(string.ascii_lowercase, k=4))}.xml"
         
-        self.redirect_url = "https://onykp.com/link?z=10567572"  # affiliate link زي viralsvideo
+        self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"  # affiliate link زي viralsvideo
         self.affiliate_url = self.redirect_url
         
         self.keywords_ar = self._load_keywords("keywords_ar.txt", ["سكس عربي", "نيك", "سكس مصري", "سكس مترجم", "سكس محارم"])
@@ -269,3 +269,4 @@ hs.src = ('//s10.histats.com/js15_as.js');
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
     bot.run(count=150)
+
