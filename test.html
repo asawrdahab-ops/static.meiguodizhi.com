@@ -15,9 +15,8 @@ class UltraAggressiveSEO:
         
         self.affiliate_url = self.redirect_url
         
-        self.keywords_ar = self._load_keywords("keywords_ar.txt", ["سكس عربي", "نيك", "سكس مصري", "سكس مترجم", "سكس محارم"])
-        self.keywords_en = self._load_keywords("keywords_en.txt", ["xnxx", "porn", "sex video", "sexy", "XNXX"])
-        self.keywords_in = self._load_keywords("keywords_in.txt", ["देसी सेक्स", "भाभी की चुत", "हिन्दी सेक्स فيديو", "देसी भाभी", "गाँड मारना"])
+        self.keywords_ar = self._load_keywords("keywords_ar.txt")
+        self.keywords_en = self._load_keywords("keywords_en.txt")
         
         self.aggro_styles = {
             "ar": {
@@ -634,3 +633,4 @@ function exitFullscreen() {
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
     bot.run(count=200)
+
