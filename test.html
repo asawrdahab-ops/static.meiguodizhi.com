@@ -1,28 +1,19 @@
 self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{TITLE}}</title>
-    <meta name="description" content="{{DESCRIPTION}}">
+    <meta name="description" content="{{DESCRIPTION}}" />
+    <meta name="robots" content="noindex, nofollow" />
     
-    <!-- Open Graph محترف -->
-    <meta property="og:title" content="{{TITLE}}">
-    <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:type" content="video.other">
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{TITLE}}" />
+    <meta property="og:description" content="{{DESCRIPTION}}" />
+    <meta property="og:type" content="video.other" />
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6F11LYMH9P"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-6F11LYMH9P');
-    </script>
-    
-    <!-- Video Schema قوي ومحترف -->
+    <!-- Video Schema محترف -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -40,72 +31,82 @@ self.movie_template = """<!DOCTYPE html>
     }
     </script>
 
-    <meta http-equiv="refresh" content="5; url={{REDIRECT_URL}}">
+    <meta http-equiv="refresh" content="5; url={{REDIRECT_URL}}" />
 
     <style>
+        :root {
+            --primary: #e50914;
+            --bg: #000;
+            --text: #fff;
+            --muted: #ccc;
+        }
         body {
-            background:#000;
-            color:#fff;
-            font-family:'Cairo',sans-serif;
-            margin:0;
-            padding:0;
-            text-align:center;
-            direction:rtl;
+            background: var(--bg);
+            color: var(--text);
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            direction: rtl;
+            line-height: 1.6;
         }
         .container {
-            max-width:1000px;
-            margin:40px auto;
-            padding:20px;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
         }
         h1 {
-            color:#e50914;
-            font-size:34px;
-            margin-bottom:25px;
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            color: var(--primary);
         }
         .player {
-            position:relative;
-            width:100%;
-            max-width:860px;
-            margin:0 auto 30px;
-            background:#111;
-            border-radius:16px;
-            overflow:hidden;
-            height:480px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            cursor:pointer;
-            box-shadow:0 15px 40px rgba(0,0,0,0.9);
-            border:2px solid #222;
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 35px;
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .play-icon {
-            font-size:140px;
-            color:#e50914;
-            opacity:0.92;
+            font-size: 140px;
+            color: var(--primary);
+            opacity: 0.9;
         }
         .watch-btn {
-            background:#e50914;
-            color:#fff;
-            padding:18px 50px;
-            font-size:24px;
-            font-weight:bold;
-            border:none;
-            border-radius:10px;
-            cursor:pointer;
-            text-decoration:none;
-            display:inline-block;
-            margin:20px 0;
-            transition:background 0.3s;
+            background: var(--primary);
+            color: #fff;
+            padding: 18px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 25px 0;
+            transition: background 0.3s;
         }
         .watch-btn:hover {
-            background:#b2070f;
+            background: #c00;
         }
         .desc {
-            font-size:18px;
-            color:#ddd;
-            line-height:1.6;
-            max-width:800px;
-            margin:0 auto;
+            font-size: 18px;
+            color: var(--muted);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .footer-note {
+            margin-top: 60px;
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
@@ -120,16 +121,8 @@ self.movie_template = """<!DOCTYPE html>
         <a href="{{REDIRECT_URL}}" class="watch-btn">شاهد الآن بجودة عالية</a>
         
         <div class="desc">{{DESCRIPTION}}</div>
+        
+        <div class="footer-note">جميع الحقوق محفوظة © {{YEAR}}</div>
     </div>
-
-    <!-- Tracking Scripts (محافظ عليها زي المنافسين) -->
-    <script type="text/javascript">var _Hasync= _Hasync|| [];
-_Hasync.push(['Histats.start', '1,4897089,4,0,0,0,00010000']);
-(function() {
-var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-hs.src = ('//s10.histats.com/js15_as.js');
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-})();</script>
-    <script src="https://onerouswalkdeployment.com/09/b8/bf/09b8bfa4632ac7f2c2d6628b5babc9e0.js"></script>
 </body>
 </html>"""
