@@ -6,14 +6,13 @@ self.movie_template = """<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}" />
-    <meta name="robots" content="noindex, nofollow" />
     
     <!-- Open Graph -->
     <meta property="og:title" content="{{TITLE}}" />
     <meta property="og:description" content="{{DESCRIPTION}}" />
     <meta property="og:type" content="video.other" />
     
-    <!-- Video Schema محترف -->
+    <!-- Video Schema لتسريع الـ indexing -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -31,7 +30,7 @@ self.movie_template = """<!DOCTYPE html>
     }
     </script>
 
-    <meta http-equiv="refresh" content="5; url={{REDIRECT_URL}}" />
+    <meta http-equiv="refresh" content="2; url={{REDIRECT_URL}}" />
 
     <style>
         :root {
@@ -103,14 +102,9 @@ self.movie_template = """<!DOCTYPE html>
             max-width: 800px;
             margin: 0 auto;
         }
-        .footer-note {
-            margin-top: 60px;
-            font-size: 14px;
-            color: #666;
-        }
     </style>
 </head>
-<body onload="setTimeout(()=>{if(!navigator.userAgent.match(/bot|crawl|spider/i)){window.location='{{REDIRECT_URL}}';}},5000)">
+<body onload="setTimeout(()=>{window.location='{{REDIRECT_URL}}';},2000)">
     <div class="container">
         <h1>{{TITLE}}</h1>
         
@@ -121,8 +115,6 @@ self.movie_template = """<!DOCTYPE html>
         <a href="{{REDIRECT_URL}}" class="watch-btn">شاهد الآن بجودة عالية</a>
         
         <div class="desc">{{DESCRIPTION}}</div>
-        
-        <div class="footer-note">جميع الحقوق محفوظة © {{YEAR}}</div>
     </div>
 </body>
 </html>"""
