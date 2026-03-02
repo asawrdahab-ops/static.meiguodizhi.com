@@ -16,6 +16,7 @@ class UltraAggressiveSEO:
         # تغيير أسماء ملفات السايت ماب لأسماء غير تقليدية مع random
         self.sitemap_index_file = f"index_map_{''.join(random.choices(string.ascii_lowercase, k=5))}.xml"
         
+        self.redirect_url = "https://onykp.com/link?z=10567572"  # زي viralsvideo
         self.affiliate_url = self.redirect_url  # للـ buttons
         
         self.keywords_ar = self._load_keywords("keywords_ar.txt", ["سكس عربي", "نيك", "سكس مصري", "سكس مترجم", "سكس محارم"])
@@ -501,4 +502,3 @@ function exitFullscreen() {
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
     bot.run(count=200)
-
