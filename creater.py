@@ -307,5 +307,6 @@ class UltraAggressiveSEO:
 
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
-    bot.run(count=250)
+    bot.run(count=50)
+
 
