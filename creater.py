@@ -98,17 +98,21 @@ class UltraAggressiveSEO:
         slug = re.sub(r'[\s-]+', '-', clean).strip('-')
         return f"{slug[:50]}.html"
 
+    def generate_random_name(self, length=8):
+        """توليد اسم عشوائي للملفات"""
+        return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
+
     def create_structured_sitemaps(self, pages, chunk_size=200):
-        """ينشئ ملفات سايت ماب فرعية كل ملف 200 رابط وملف اندكس واحد"""
+        """ينشئ ملفات خرائط فرعية بأسماء عشوائية وملف فهرس عشوائي"""
         sitemap_files = []
         total_pages = len(pages)
         
         # تقسيم الصفحات إلى مجموعات (كل مجموعة 200)
         for i in range(0, total_pages, chunk_size):
             chunk = pages[i : i + chunk_size]
-            file_number = (i // chunk_size) + 1
-            sitemap_name = f"sitemap_{file_number}.xml"
-            sitemap_files.append(sitemap_name)
+            # اسم عشوائي للملف الفرعي
+            random_sitemap_name = f"{self.generate_random_name(10)}.xml"
+            sitemap_files.append(random_sitemap_name)
             
             content = '<?xml version="1.0" encoding="UTF-8"?>\n'
             content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -116,20 +120,23 @@ class UltraAggressiveSEO:
                 content += f'  <url>\n    <loc>{p["url"]}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
             content += '</urlset>'
             
-            with open(sitemap_name, "w", encoding="utf-8") as f:
+            with open(random_sitemap_name, "w", encoding="utf-8") as f:
                 f.write(content)
-            print(f"✅ Created {sitemap_name} with {len(chunk)} links.")
+            print(f"✅ Created sub-file: {random_sitemap_name} with {len(chunk)} links.")
 
-        # إنشاء ملف sitemap.xml الرئيسي (Index)
+        # إنشاء ملف الفهرس الرئيسي باسم عشوائي
+        random_index_name = f"{self.generate_random_name(12)}.xml"
         index_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
         index_content += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         for sm in sitemap_files:
             index_content += f'  <sitemap>\n    <loc>https://{self.domain}/{sm}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n  </sitemap>\n'
         index_content += '</sitemapindex>'
         
-        with open("sitemap.xml", "w", encoding="utf-8") as f:
+        with open(random_index_name, "w", encoding="utf-8") as f:
             f.write(index_content)
-        print(f"🚀 Main sitemap.xml created successfully linking to {len(sitemap_files)} sub-sitemaps.")
+        
+        print(f"🚀 Main index file created: {random_index_name}")
+        print(f"ℹ️ You should submit this link to search engines: https://{self.domain}/{random_index_name}")
 
     def run(self, count=200):
         # إنشاء المجلدات
@@ -144,7 +151,6 @@ class UltraAggressiveSEO:
         for _ in range(count):
             title, description = self.generate_title_and_desc()
             slug = self.clean_slug(title)
-            # تجنب تكرار أسماء الملفات في القائمة
             pages.append({
                 "title": title,
                 "description": description,
@@ -166,17 +172,15 @@ class UltraAggressiveSEO:
                                            .replace("{{TIME_ISO}}", current_time_iso)\
                                            .replace("{{INTERNAL_LINKS}}", links_html)
             
-            # التشفير لإخفاء المحتوى عن البوتات السطحية (بلاك هات)
             encoded = base64.b64encode(full_html.encode('utf-8')).decode('utf-8')
             output = f'<html><body><script>document.write(atob("{encoded}"));</script></body></html>'
             
             with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
                 f.write(output)
 
-        # إنشاء السايت ماب (كل واحد 200 رابط)
+        # إنشاء الملفات بأسماء عشوائية (كل واحد 200 رابط)
         self.create_structured_sitemaps(pages, chunk_size=200)
 
 if __name__ == "__main__":
-    # عدل count للعدد الذي تريده (مثلاً 1000 سينتج 5 ملفات سايت ماب + ملف اندكس)
     bot = UltraAggressiveSEO()
     bot.run(count=50)
