@@ -228,10 +228,11 @@ class UltraAggressiveSEO:
         
         return title, description
 
-    def clean_slug(self, title):
-        clean = re.sub(r'[^a-zA-Z0-9\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
-        slug = re.sub(r'[\s-]+', '-', clean).strip('-')
-        return slug + ".html"
+def clean_slug(self, title):
+        clean = re.sub(r'[^a-zA-Z\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
+        slug = re.sub(r'[-\s]+', '-', clean).strip('-')
+        hash_str = ''.join(random.choices(string.hexdigits.lower(), k=6))  # hash في slug
+        return "-".join(slug.split("-")[:8]) + f"-{hash_str}.html"
 
     def run(self, count=200):
         if not os.path.exists(self.main_folder): os.makedirs(self.main_folder)
@@ -279,3 +280,4 @@ class UltraAggressiveSEO:
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
     bot.run(count=200)
+
