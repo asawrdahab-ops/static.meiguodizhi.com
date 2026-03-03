@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://static.meiguodizhi.com/index_map_vubu.xml
