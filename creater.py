@@ -7,21 +7,24 @@ import base64
 
 class UltraAggressiveSEO:
     def __init__(self):
-        # مجلدات رئيسية عشوائية (اختار منها 6 كل مرة)
+        # مجلدات رئيسية متعددة (اختيار عشوائي كل مرة)
         self.main_folders_pool = [
             "news", "vid", "clips", "hot", "live", "viral", "update", "stream", "media", "watch", "play", "top"
         ]
+        # هيختار مجلد رئيسي واحد عشوائي كل تشغيلة (لو بدك 6 مجلدات في تشغيلة واحدة، قولي نعدل)
+        self.main_folder = random.choice(self.main_folders_pool)
         
-        # مجلدات فرعية (داخل كل رئيسي)
-        self.subfolders_pool = ["hbcm", "video", "leaked", "viral", "live", "trending", "exclusive", "hd"]
+        # مجلدات فرعية داخل الرئيسي
+        self.subfolders = ["hbcm", "video", "viral", "live"]
         
         self.domain = self._get_domain()
+        
         self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
-       
+        
         self.keywords_ar = self._load_keywords("keywords_ar.txt")
         self.keywords_en = self._load_keywords("keywords_en.txt")
         self.keywords_in = self._load_keywords("keywords_in.txt")
-        
+
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -216,9 +219,7 @@ class UltraAggressiveSEO:
     def clean_slug(self, title):
         clean = re.sub(r'[^a-zA-Z0-9\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
         slug_parts = re.sub(r'[\s-]+', '-', clean).strip('-').split('-')
-        # نأخذ أول 8 كلمات فقط (بدون hash عشوائي في النهاية)
         short_slug = '-'.join(slug_parts[:8])
-        # لو الـ slug قصير جدًا، نضيف كلمة إضافية من العنوان عشان ما يبقاش فارغ
         if len(short_slug) < 10:
             extra = slug_parts[-1] if slug_parts else "video"
             short_slug = f"{short_slug}-{extra}"
@@ -242,10 +243,10 @@ class UltraAggressiveSEO:
                 f.write(sitemap_content)
            
             print(f"Created sitemap: {sitemap_name} with {len(chunk)} URLs")
-
         print("All sitemaps created. No index file or robots.txt generated.")
 
     def run(self, count=200):
+        # إنشاء المجلد الرئيسي العشوائي إذا ما كان موجود
         if not os.path.exists(self.main_folder):
             os.makedirs(self.main_folder)
        
@@ -256,7 +257,7 @@ class UltraAggressiveSEO:
        
         pages = []
        
-        print(f"Generating {count} pages in {target_sub}...")
+        print(f"Generating {count} pages in {self.main_folder}/{target_sub}...")
        
         for _ in range(count):
             title, description = self.generate_title_and_desc()
@@ -290,7 +291,7 @@ class UltraAggressiveSEO:
        
         self.create_multiple_sitemaps(pages)
        
-        print(f"Done. Generated {count} pages in {target_sub}")
+        print(f"Done. Generated {count} pages in {self.main_folder}/{target_sub}")
 
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
