@@ -7,10 +7,15 @@ import base64
 
 class UltraAggressiveSEO:
     def __init__(self):
-        self.main_folder = "news"
-        self.subfolders = ["hbcm", "video", "viral", "live"]
+        # مجلدات رئيسية عشوائية (اختار منها 6 كل مرة)
+        self.main_folders_pool = [
+            "news", "vid", "clips", "hot", "live", "viral", "update", "stream", "media", "watch", "play", "top"
+        ]
+        
+        # مجلدات فرعية (داخل كل رئيسي)
+        self.subfolders_pool = ["hbcm", "video", "leaked", "viral", "live", "trending", "exclusive", "hd"]
+        
         self.domain = self._get_domain()
-       
         self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
        
         self.keywords_ar = self._load_keywords("keywords_ar.txt")
@@ -289,4 +294,4 @@ class UltraAggressiveSEO:
 
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
-    bot.run(count=200)
+    bot.run(count=50)
