@@ -11,13 +11,10 @@ class UltraAggressiveSEO:
         self.subfolders = ["hbcm", "video", "viral", "live"]
         self.domain = self._get_domain()
         
-        self.sitemap_index_file = f"sitemap_{''.join(random.choices(string.ascii_lowercase, k=5))}.xml"
-        
         self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
         
         self.keywords_ar = self._load_keywords("keywords_ar.txt")
         self.keywords_en = self._load_keywords("keywords_en.txt")
-        self.keywords_in = self._load_keywords("keywords_in.txt")
 
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -120,7 +117,6 @@ class UltraAggressiveSEO:
             text-decoration: none;
             display: inline-block;
             margin: 25px 0;
-            transition: background 0.3s;
         }
         .watch-btn:hover {
             background: #c00;
@@ -222,6 +218,29 @@ class UltraAggressiveSEO:
         hash_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
         return f"{short_slug}-{hash_str}.html"
 
+    def create_multiple_sitemaps(self, pages):
+        # بنقسم الصفحات على عدة sitemaps عشوائية (بدل sitemap واحد كبير)
+        random.shuffle(pages)
+        chunk_size = 50  # كل sitemap فيه 50 رابط تقريبًا (جوجل بيحبها صغيرة)
+        for i in range(0, len(pages), chunk_size):
+            chunk = pages[i:i + chunk_size]
+            random_name = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+            sitemap_name = f"sitemap_{random_name}.xml"
+            
+            sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+            sitemap_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            for p in chunk:
+                sitemap_content += f'  <url>\n    <loc>{p["url"]}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
+            sitemap_content += '</urlset>'
+            
+            with open(sitemap_name, "w", encoding="utf-8") as f:
+                f.write(sitemap_content)
+            
+            print(f"Created sitemap: {sitemap_name} with {len(chunk)} URLs")
+
+        # ما بننشئش sitemap index ولا robots.txt عشان ما يشوفه المنافس
+        print("All sitemaps created. No index file or robots.txt generated.")
+
     def run(self, count=200):
         if not os.path.exists(self.main_folder):
             os.makedirs(self.main_folder)
@@ -264,6 +283,9 @@ class UltraAggressiveSEO:
             
             with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
                 f.write(output_content)
+        
+        # إنشاء عدة sitemaps عشوائية بدون index ولا robots.txt
+        self.create_multiple_sitemaps(pages)
         
         print(f"Done. Generated {count} pages in {target_sub}")
 
