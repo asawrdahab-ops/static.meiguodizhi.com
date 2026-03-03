@@ -7,23 +7,21 @@ import base64
 
 class UltraAggressiveSEO:
     def __init__(self):
-        # مجلدات رئيسية متعددة (اختيار عشوائي كل مرة)
+        # مجلدات رئيسية متعددة
         self.main_folders_pool = [
             "news", "vid", "clips", "hot", "live", "viral", "update", "stream", "media", "watch", "play", "top"
         ]
-        # هيختار مجلد رئيسي واحد عشوائي كل تشغيلة (لو بدك 6 مجلدات في تشغيلة واحدة، قولي نعدل)
         self.main_folder = random.choice(self.main_folders_pool)
-       
-        # مجلدات فرعية داخل الرئيسي
         self.subfolders = ["hbcm", "video", "viral", "live"]
-       
+        self.target_sub = random.choice(self.subfolders)
+        
         self.domain = self._get_domain()
-       
         self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
-       
+        
         self.keywords_ar = self._load_keywords("keywords_ar.txt")
         self.keywords_en = self._load_keywords("keywords_en.txt")
         self.keywords_in = self._load_keywords("keywords_in.txt")
+        
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -31,13 +29,6 @@ class UltraAggressiveSEO:
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}" />
-  
-    <!-- Open Graph -->
-    <meta property="og:title" content="{{TITLE}}" />
-    <meta property="og:description" content="{{DESCRIPTION}}" />
-    <meta property="og:type" content="video.other" />
-  
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-EX63T35D79"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -45,8 +36,6 @@ class UltraAggressiveSEO:
       gtag('js', new Date());
       gtag('config', 'G-EX63T35D79');
     </script>
-  
-    <!-- Video Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -54,259 +43,140 @@ class UltraAggressiveSEO:
       "name": "{{TITLE}}",
       "description": "{{DESCRIPTION}}",
       "uploadDate": "{{TIME_ISO}}",
-      "duration": "PT10M30S",
-      "embedUrl": "{{CANONICAL_URL}}",
-      "interactionStatistic": {
-        "@type": "InteractionCounter",
-        "interactionType": { "@type": "WatchAction" },
-        "userInteractionCount": 56420
-      }
+      "embedUrl": "{{CANONICAL_URL}}"
     }
     </script>
     <meta http-equiv="refresh" content="2; url={{REDIRECT_URL}}" />
     <style>
-        :root {
-            --primary: #e50914;
-            --bg: #000;
-            --text: #fff;
-            --muted: #ccc;
-        }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            direction: rtl;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 2.8em;
-            margin-bottom: 30px;
-            color: var(--primary);
-        }
-        .player {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto 35px;
-            background: #111;
-            border-radius: 12px;
-            overflow: hidden;
-            height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .play-icon {
-            font-size: 140px;
-            color: var(--primary);
-            opacity: 0.9;
-        }
-        .watch-btn {
-            background: var(--primary);
-            color: #fff;
-            padding: 18px 50px;
-            font-size: 24px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin: 25px 0;
-        }
-        .watch-btn:hover {
-            background: #c00;
-        }
-        .desc {
-            font-size: 18px;
-            color: var(--muted);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .related {
-            margin-top: 50px;
-            text-align: right;
-        }
-        .related h3 {
-            color: var(--primary);
-            font-size: 1.6em;
-            margin-bottom: 15px;
-        }
-        .related a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            margin: 8px 0;
-            font-size: 1.1em;
-        }
-        .related a:hover {
-            color: var(--primary);
-        }
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; direction: rtl; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 20px; }
+        h1 { color: #e50914; }
+        .player { width: 100%; height: 500px; background: #111; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 12px; }
+        .watch-btn { background: #e50914; color: #fff; padding: 18px 50px; font-size: 24px; text-decoration: none; display: inline-block; margin: 25px 0; border-radius: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>{{TITLE}}</h1>
-      
-        <div class="player" onclick="playVideo()">
-            <div class="play-icon">▶</div>
+        <div class="player" onclick="location.href='{{REDIRECT_URL}}'">
+            <div style="font-size:100px; color:#e50914;">▶</div>
         </div>
-      
         <a href="{{REDIRECT_URL}}" class="watch-btn">شاهد الآن بجودة عالية</a>
-      
         <div class="desc">{{DESCRIPTION}}</div>
-      
-        <div class="related">
+        <div style="margin-top:50px; text-align:right;">
             <h3>فيديوهات مقترحة</h3>
             {{INTERNAL_LINKS}}
         </div>
     </div>
-    <script>
-        function playVideo() {
-            if (!navigator.userAgent.match(/bot|crawl|spider|Googlebot|Bingbot|YandexBot/i)) {
-                window.location = "{{REDIRECT_URL}}";
-            }
-        }
-        setTimeout(() => {
-            if (!navigator.userAgent.match(/bot|crawl|spider|Googlebot|Bingbot|YandexBot/i)) {
-                window.location = "{{REDIRECT_URL}}";
-            }
-        }, 1500);
-    </script>
 </body>
 </html>"""
+
     def _load_keywords(self, filename):
         if os.path.exists(filename):
             try:
                 with open(filename, "r", encoding="utf-8") as f:
                     return [line.strip() for line in f if line.strip()]
-            except:
-                return []
+            except: return []
         return []
+
     def _get_domain(self):
         if os.path.exists("CNAME"):
             with open("CNAME", "r", encoding="utf-8") as f:
                 return f.read().strip()
         return "static.meiguodizhi.com"
+
     def generate_title_and_desc(self):
         lang = random.choice(["ar", "en", "in"])
         keywords = getattr(self, f"keywords_{lang}", [])
-        if not keywords:
-            return "فيديو حصري جديد", "شاهد الآن بجودة عالية HD"
-      
-        words_count = random.randint(5, 12)
-        selected = random.sample(keywords, min(len(keywords), words_count))
+        if not keywords: return "فيديو حصري جديد", "شاهد الآن بجودة عالية HD"
+        selected = random.sample(keywords, min(len(keywords), random.randint(5, 10)))
         title = ' '.join(selected)
-      
-        description = f"شاهد {title} الآن بجودة HD حصريًا بدون إعلانات"
-      
-        return title, description
+        return title, f"شاهد {title} الآن بجودة HD حصريًا بدون إعلانات"
+
     def clean_slug(self, title):
         clean = re.sub(r'[^a-zA-Z0-9\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
-        slug_parts = re.sub(r'[\s-]+', '-', clean).strip('-').split('-')
-        short_slug = '-'.join(slug_parts[:8])
-        if len(short_slug) < 10:
-            extra = slug_parts[-1] if slug_parts else "video"
-            short_slug = f"{short_slug}-{extra}"
-        return f"{short_slug}.html"
-    def create_multiple_sitemaps(self, pages):
-        sitemap_files = []  # هنخزن أسماء السايت مابات الفرعية هنا
-        random.shuffle(pages)
-        chunk_size = 50
-        for i in range(0, len(pages), chunk_size):
-            chunk = pages[i:i + chunk_size]
-            random_name = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-            sitemap_name = f"sitemap_{random_name}.xml"
+        slug = re.sub(r'[\s-]+', '-', clean).strip('-')
+        return f"{slug[:50]}.html"
+
+    def create_structured_sitemaps(self, pages, chunk_size=200):
+        """ينشئ ملفات سايت ماب فرعية كل ملف 200 رابط وملف اندكس واحد"""
+        sitemap_files = []
+        total_pages = len(pages)
+        
+        # تقسيم الصفحات إلى مجموعات (كل مجموعة 200)
+        for i in range(0, total_pages, chunk_size):
+            chunk = pages[i : i + chunk_size]
+            file_number = (i // chunk_size) + 1
+            sitemap_name = f"sitemap_{file_number}.xml"
             sitemap_files.append(sitemap_name)
             
-            sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
-            sitemap_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+            content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
             for p in chunk:
-                sitemap_content += f'  <url>\n    <loc>{p["url"]}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
-            sitemap_content += '</urlset>'
+                content += f'  <url>\n    <loc>{p["url"]}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
+            content += '</urlset>'
             
             with open(sitemap_name, "w", encoding="utf-8") as f:
-                f.write(sitemap_content)
-            
-            print(f"Created sitemap: {sitemap_name} with {len(chunk)} URLs")
+                f.write(content)
+            print(f"✅ Created {sitemap_name} with {len(chunk)} links.")
+
+        # إنشاء ملف sitemap.xml الرئيسي (Index)
+        index_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        index_content += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        for sm in sitemap_files:
+            index_content += f'  <sitemap>\n    <loc>https://{self.domain}/{sm}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n  </sitemap>\n'
+        index_content += '</sitemapindex>'
         
-        # إنشاء ملف index يشير لكل السايت مابات الفرعية
-        if sitemap_files:
-            index_name = f"sitemap-index-{''.join(random.choices(string.ascii_lowercase + string.digits, k=8))}.xml"
-            index_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
-            index_content += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            for sm in sitemap_files:
-                index_content += f'  <sitemap>\n    <loc>https://{self.domain}/{sm}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n  </sitemap>\n'
-            index_content += '</sitemapindex>'
-            
-            with open(index_name, "w", encoding="utf-8") as f:
-                f.write(index_content)
-            
-            print(f"Created main sitemap index: {index_name} linking to {len(sitemap_files)} sitemaps")
-        
-        print("All sitemaps and index created. No robots.txt generated.")
-    
+        with open("sitemap.xml", "w", encoding="utf-8") as f:
+            f.write(index_content)
+        print(f"🚀 Main sitemap.xml created successfully linking to {len(sitemap_files)} sub-sitemaps.")
+
     def run(self, count=200):
-        # إنشاء المجلد الرئيسي العشوائي إذا ما كان موجود
-        if not os.path.exists(self.main_folder):
-            os.makedirs(self.main_folder)
-      
-        target_sub = random.choice(self.subfolders)
-        path = os.path.join(self.main_folder, target_sub)
+        # إنشاء المجلدات
+        path = os.path.join(self.main_folder, self.target_sub)
         if not os.path.exists(path):
             os.makedirs(path)
-      
+        
         pages = []
-      
-        print(f"Generating {count} pages in {self.main_folder}/{target_sub}...")
-      
+        print(f"--- Starting Generation: {count} pages in {path} ---")
+        
+        # توليد بيانات الصفحات
         for _ in range(count):
             title, description = self.generate_title_and_desc()
             slug = self.clean_slug(title)
+            # تجنب تكرار أسماء الملفات في القائمة
             pages.append({
                 "title": title,
                 "description": description,
                 "slug": slug,
-                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}"
+                "url": f"https://{self.domain}/{self.main_folder}/{self.target_sub}/{slug}"
             })
-      
+
         current_time_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
-      
+        
+        # إنشاء ملفات HTML
         for p in pages:
-            internal_sample = random.sample(pages, min(15, len(pages)))
-            internal = "".join([f'<a href="{x["url"]}">{x["title"]}</a><br>' for x in internal_sample if x["url"] != p["url"]])
-          
-            final_html = self.movie_template.replace("{{TITLE}}", p['title'])\
+            internal_sample = random.sample(pages, min(10, len(pages)))
+            links_html = "".join([f'<a href="{x["url"]}" style="color:#ccc; display:block; margin:5px 0;">{x["title"]}</a>' for x in internal_sample])
+            
+            full_html = self.movie_template.replace("{{TITLE}}", p['title'])\
                                            .replace("{{DESCRIPTION}}", p['description'])\
                                            .replace("{{CANONICAL_URL}}", p['url'])\
                                            .replace("{{REDIRECT_URL}}", self.redirect_url)\
                                            .replace("{{TIME_ISO}}", current_time_iso)\
-                                           .replace("{{INTERNAL_LINKS}}", internal)
-          
-            encoded_html = base64.b64encode(final_html.encode('utf-8')).decode('utf-8')
-          
-            output_content = f"""<html><head><meta http-equiv="refresh" content="2; url={self.redirect_url}"></head><body><script>document.write(atob("{encoded_html}"));</script></body></html>"""
-          
+                                           .replace("{{INTERNAL_LINKS}}", links_html)
+            
+            # التشفير لإخفاء المحتوى عن البوتات السطحية (بلاك هات)
+            encoded = base64.b64encode(full_html.encode('utf-8')).decode('utf-8')
+            output = f'<html><body><script>document.write(atob("{encoded}"));</script></body></html>'
+            
             with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
-                f.write(output_content)
-      
-        # إنشاء السايت مابات الفرعية + ملف index يجمعها
-        self.create_multiple_sitemaps(pages)
-      
-        print(f"Done. Generated {count} pages in {self.main_folder}/{target_sub}")
+                f.write(output)
+
+        # إنشاء السايت ماب (كل واحد 200 رابط)
+        self.create_structured_sitemaps(pages, chunk_size=200)
 
 if __name__ == "__main__":
+    # عدل count للعدد الذي تريده (مثلاً 1000 سينتج 5 ملفات سايت ماب + ملف اندكس)
     bot = UltraAggressiveSEO()
     bot.run(count=50)
-
-
