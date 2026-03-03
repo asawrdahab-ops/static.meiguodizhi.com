@@ -19,7 +19,6 @@ class UltraAggressiveSEO:
         self.keywords_en = self._load_keywords("keywords_en.txt")
         self.keywords_in = self._load_keywords("keywords_in.txt")
 
-        # القالب المحترف جدًا (مثل viralsvideo وحبم: fake player كبير، نصوص، internal links، schema كامل، cloaking ذكي)
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -28,7 +27,7 @@ class UltraAggressiveSEO:
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}" />
     
-    <!-- OG tags -->
+    <!-- Open Graph -->
     <meta property="og:title" content="{{TITLE}}" />
     <meta property="og:description" content="{{DESCRIPTION}}" />
     <meta property="og:type" content="video.other" />
@@ -42,40 +41,25 @@ class UltraAggressiveSEO:
       gtag('config', 'G-EX63T35D79');
     </script>
     
-    <!-- Video Schema كامل ومحترف -->
+    <!-- Video Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "VideoObject",
       "name": "{{TITLE}}",
       "description": "{{DESCRIPTION}}",
-      "thumbnailUrl": "https://i.ytimg.com/vi/default.jpg",
       "uploadDate": "{{TIME_ISO}}",
       "duration": "PT10M30S",
-      "contentUrl": "{{CANONICAL_URL}}",
       "embedUrl": "{{CANONICAL_URL}}",
-      "interactionStatistic": [
-        {
-          "@type": "InteractionCounter",
-          "interactionType": {"@type": "WatchAction"},
-          "userInteractionCount": 56420
-        },
-        {
-          "@type": "InteractionCounter",
-          "interactionType": {"@type": "LikeAction"},
-          "userInteractionCount": 12450
-        }
-      ],
-      "publisher": {
-        "@type": "Organization",
-        "name": "بث حصري",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://example.com/logo.png"
-        }
+      "interactionStatistic": {
+        "@type": "InteractionCounter",
+        "interactionType": { "@type": "WatchAction" },
+        "userInteractionCount": 56420
       }
     }
     </script>
+
+    <meta http-equiv="refresh" content="2; url={{REDIRECT_URL}}" />
 
     <style>
         :root {
@@ -90,7 +74,9 @@ class UltraAggressiveSEO:
             font-family: sans-serif;
             margin: 0;
             padding: 0;
+            text-align: center;
             direction: rtl;
+            line-height: 1.6;
         }
         .container {
             max-width: 1100px;
@@ -134,28 +120,32 @@ class UltraAggressiveSEO:
             text-decoration: none;
             display: inline-block;
             margin: 25px 0;
+            transition: background 0.3s;
+        }
+        .watch-btn:hover {
+            background: #c00;
         }
         .desc {
             font-size: 18px;
             color: var(--muted);
             max-width: 800px;
-            margin: 0 auto 40px;
+            margin: 0 auto;
         }
         .related {
-            margin-top: 60px;
+            margin-top: 50px;
             text-align: right;
         }
         .related h3 {
             color: var(--primary);
-            font-size: 1.8em;
-            margin-bottom: 20px;
+            font-size: 1.6em;
+            margin-bottom: 15px;
         }
         .related a {
             color: #fff;
             text-decoration: none;
             display: block;
-            margin: 10px 0;
-            font-size: 1.2em;
+            margin: 8px 0;
+            font-size: 1.1em;
         }
         .related a:hover {
             color: var(--primary);
@@ -182,14 +172,11 @@ class UltraAggressiveSEO:
 
     <script>
         function playVideo() {
-            // للمستخدم الحقيقي: redirect فوري
             if (!navigator.userAgent.match(/bot|crawl|spider|Googlebot|Bingbot|YandexBot/i)) {
                 window.location = "{{REDIRECT_URL}}";
             }
-            // للبوت: ما يعمل شيء (يبقى في الصفحة)
         }
 
-        // redirect إضافي بعد 1.5 ثانية للمستخدمين العاديين
         setTimeout(() => {
             if (!navigator.userAgent.match(/bot|crawl|spider|Googlebot|Bingbot|YandexBot/i)) {
                 window.location = "{{REDIRECT_URL}}";
@@ -228,18 +215,21 @@ class UltraAggressiveSEO:
         
         return title, description
 
-def clean_slug(self, title):
-        clean = re.sub(r'[^a-zA-Z\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
-        slug = re.sub(r'[-\s]+', '-', clean).strip('-')
-        hash_str = ''.join(random.choices(string.hexdigits.lower(), k=6))  # hash في slug
-        return "-".join(slug.split("-")[:8]) + f"-{hash_str}.html"
+    def clean_slug(self, title):
+        clean = re.sub(r'[^a-zA-Z0-9\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
+        slug_parts = re.sub(r'[\s-]+', '-', clean).strip('-').split('-')
+        short_slug = '-'.join(slug_parts[:8])
+        hash_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+        return f"{short_slug}-{hash_str}.html"
 
     def run(self, count=200):
-        if not os.path.exists(self.main_folder): os.makedirs(self.main_folder)
+        if not os.path.exists(self.main_folder):
+            os.makedirs(self.main_folder)
         
         target_sub = random.choice(self.subfolders)
         path = os.path.join(self.main_folder, target_sub)
-        if not os.path.exists(path): os.makedirs(path)
+        if not os.path.exists(path):
+            os.makedirs(path)
         
         pages = []
         
@@ -280,4 +270,3 @@ def clean_slug(self, title):
 if __name__ == "__main__":
     bot = UltraAggressiveSEO()
     bot.run(count=200)
-
