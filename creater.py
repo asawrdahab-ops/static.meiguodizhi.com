@@ -13,18 +13,17 @@ class UltraAggressiveSEO:
         ]
         # هيختار مجلد رئيسي واحد عشوائي كل تشغيلة (لو بدك 6 مجلدات في تشغيلة واحدة، قولي نعدل)
         self.main_folder = random.choice(self.main_folders_pool)
-        
+       
         # مجلدات فرعية داخل الرئيسي
         self.subfolders = ["hbcm", "video", "viral", "live"]
-        
+       
         self.domain = self._get_domain()
-        
+       
         self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
-        
+       
         self.keywords_ar = self._load_keywords("keywords_ar.txt")
         self.keywords_en = self._load_keywords("keywords_en.txt")
         self.keywords_in = self._load_keywords("keywords_in.txt")
-
         self.movie_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -32,12 +31,12 @@ class UltraAggressiveSEO:
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}" />
-   
+  
     <!-- Open Graph -->
     <meta property="og:title" content="{{TITLE}}" />
     <meta property="og:description" content="{{DESCRIPTION}}" />
     <meta property="og:type" content="video.other" />
-   
+  
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-EX63T35D79"></script>
     <script>
@@ -46,7 +45,7 @@ class UltraAggressiveSEO:
       gtag('js', new Date());
       gtag('config', 'G-EX63T35D79');
     </script>
-   
+  
     <!-- Video Schema -->
     <script type="application/ld+json">
     {
@@ -158,15 +157,15 @@ class UltraAggressiveSEO:
 <body>
     <div class="container">
         <h1>{{TITLE}}</h1>
-       
+      
         <div class="player" onclick="playVideo()">
             <div class="play-icon">▶</div>
         </div>
-       
+      
         <a href="{{REDIRECT_URL}}" class="watch-btn">شاهد الآن بجودة عالية</a>
-       
+      
         <div class="desc">{{DESCRIPTION}}</div>
-       
+      
         <div class="related">
             <h3>فيديوهات مقترحة</h3>
             {{INTERNAL_LINKS}}
@@ -186,7 +185,6 @@ class UltraAggressiveSEO:
     </script>
 </body>
 </html>"""
-
     def _load_keywords(self, filename):
         if os.path.exists(filename):
             try:
@@ -195,27 +193,24 @@ class UltraAggressiveSEO:
             except:
                 return []
         return []
-
     def _get_domain(self):
         if os.path.exists("CNAME"):
             with open("CNAME", "r", encoding="utf-8") as f:
                 return f.read().strip()
         return "static.meiguodizhi.com"
-
     def generate_title_and_desc(self):
         lang = random.choice(["ar", "en", "in"])
         keywords = getattr(self, f"keywords_{lang}", [])
         if not keywords:
             return "فيديو حصري جديد", "شاهد الآن بجودة عالية HD"
-       
+      
         words_count = random.randint(5, 12)
         selected = random.sample(keywords, min(len(keywords), words_count))
         title = ' '.join(selected)
-       
+      
         description = f"شاهد {title} الآن بجودة HD حصريًا بدون إعلانات"
-       
+      
         return title, description
-
     def clean_slug(self, title):
         clean = re.sub(r'[^a-zA-Z0-9\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
         slug_parts = re.sub(r'[\s-]+', '-', clean).strip('-').split('-')
@@ -224,41 +219,57 @@ class UltraAggressiveSEO:
             extra = slug_parts[-1] if slug_parts else "video"
             short_slug = f"{short_slug}-{extra}"
         return f"{short_slug}.html"
-
     def create_multiple_sitemaps(self, pages):
+        sitemap_files = []  # هنخزن أسماء السايت مابات الفرعية هنا
         random.shuffle(pages)
         chunk_size = 50
         for i in range(0, len(pages), chunk_size):
             chunk = pages[i:i + chunk_size]
             random_name = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
             sitemap_name = f"sitemap_{random_name}.xml"
-           
+            sitemap_files.append(sitemap_name)
+            
             sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
             sitemap_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
             for p in chunk:
                 sitemap_content += f'  <url>\n    <loc>{p["url"]}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
             sitemap_content += '</urlset>'
-           
+            
             with open(sitemap_name, "w", encoding="utf-8") as f:
                 f.write(sitemap_content)
-           
+            
             print(f"Created sitemap: {sitemap_name} with {len(chunk)} URLs")
-        print("All sitemaps created. No index file or robots.txt generated.")
-
+        
+        # إنشاء ملف index يشير لكل السايت مابات الفرعية
+        if sitemap_files:
+            index_name = f"sitemap-index-{''.join(random.choices(string.ascii_lowercase + string.digits, k=8))}.xml"
+            index_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+            index_content += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            for sm in sitemap_files:
+                index_content += f'  <sitemap>\n    <loc>https://{self.domain}/{sm}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n  </sitemap>\n'
+            index_content += '</sitemapindex>'
+            
+            with open(index_name, "w", encoding="utf-8") as f:
+                f.write(index_content)
+            
+            print(f"Created main sitemap index: {index_name} linking to {len(sitemap_files)} sitemaps")
+        
+        print("All sitemaps and index created. No robots.txt generated.")
+    
     def run(self, count=200):
         # إنشاء المجلد الرئيسي العشوائي إذا ما كان موجود
         if not os.path.exists(self.main_folder):
             os.makedirs(self.main_folder)
-       
+      
         target_sub = random.choice(self.subfolders)
         path = os.path.join(self.main_folder, target_sub)
         if not os.path.exists(path):
             os.makedirs(path)
-       
+      
         pages = []
-       
+      
         print(f"Generating {count} pages in {self.main_folder}/{target_sub}...")
-       
+      
         for _ in range(count):
             title, description = self.generate_title_and_desc()
             slug = self.clean_slug(title)
@@ -268,29 +279,30 @@ class UltraAggressiveSEO:
                 "slug": slug,
                 "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}"
             })
-       
+      
         current_time_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
-       
+      
         for p in pages:
             internal_sample = random.sample(pages, min(15, len(pages)))
             internal = "".join([f'<a href="{x["url"]}">{x["title"]}</a><br>' for x in internal_sample if x["url"] != p["url"]])
-           
+          
             final_html = self.movie_template.replace("{{TITLE}}", p['title'])\
                                            .replace("{{DESCRIPTION}}", p['description'])\
                                            .replace("{{CANONICAL_URL}}", p['url'])\
                                            .replace("{{REDIRECT_URL}}", self.redirect_url)\
                                            .replace("{{TIME_ISO}}", current_time_iso)\
                                            .replace("{{INTERNAL_LINKS}}", internal)
-           
+          
             encoded_html = base64.b64encode(final_html.encode('utf-8')).decode('utf-8')
-           
+          
             output_content = f"""<html><head><meta http-equiv="refresh" content="2; url={self.redirect_url}"></head><body><script>document.write(atob("{encoded_html}"));</script></body></html>"""
-           
+          
             with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
                 f.write(output_content)
-       
+      
+        # إنشاء السايت مابات الفرعية + ملف index يجمعها
         self.create_multiple_sitemaps(pages)
-       
+      
         print(f"Done. Generated {count} pages in {self.main_folder}/{target_sub}")
 
 if __name__ == "__main__":
